@@ -23,7 +23,7 @@ class KeypadFragment : Fragment() {
     private lateinit var customAdapter: CustomAdapter
 
     private val labels44 = arrayOf("1", "2", "3", "A", "4", "5", "6", "B", "7", "8", "9", "C", "*", "0", "#", "D")
-    private val labels33 = arrayOf("1", "2", "3", "4", "5", "6", "7", "8", "9")
+    private val labels34 = arrayOf("1", "2", "3", "4", "5", "6", "7", "8", "9", "*", "0", "#")
 
     override fun onCreateView(inf: LayoutInflater, c: ViewGroup?, s: Bundle?): View {
         val binding = FragmentKeypadBinding.inflate(inf, c, false)
@@ -42,7 +42,7 @@ class KeypadFragment : Fragment() {
             if (!isChecked) return@addOnButtonCheckedListener
             when (checkedId) {
                 R.id.mode44 -> showGrid(labels44, 4)
-                R.id.mode33 -> showGrid(labels33, 3)
+                R.id.mode34 -> showGrid(labels34, 3)
                 R.id.modeCustom -> showCustom()
             }
         }
