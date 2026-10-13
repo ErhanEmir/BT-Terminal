@@ -47,6 +47,7 @@ class TerminalFragment : Fragment() {
             Toast.makeText(requireContext(), "Log kopyalandi", Toast.LENGTH_SHORT).show()
         }
         binding.logText.post { scrollDown() }
+        binding.versionText.text = "BT Terminal v" + UpdateManager.currentVersion(requireContext())
         return binding.root
     }
 
@@ -62,10 +63,12 @@ class TerminalFragment : Fragment() {
         } else {
             Toast.makeText(requireContext(), "Once baglan", Toast.LENGTH_SHORT).show()
         }
-        // Klavyeyi acik tut: odagi geri al
+        // Klavyeyi acik tut: odagi geri al (butonlar focusable=false oldugu icin odak zaten kutuda)
         binding.inputText.requestFocus()
-        val imm = requireContext().getSystemService(InputMethodManager::class.java)
-        imm?.showSoftInput(binding.inputText, InputMethodManager.SHOW_IMPLICIT)
+        binding.inputText.postDelayed({
+            val imm = requireContext().getSystemService(InputMethodManager::class.java)
+            imm?.showSoftInput(binding.inputText, InputMethodManager.SHOW_IMPLICIT)
+        }, 100)
     }
 
     fun appendText(t: String) {
