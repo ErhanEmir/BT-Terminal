@@ -63,12 +63,22 @@ class TerminalFragment : Fragment() {
         } else {
             Toast.makeText(requireContext(), "Once baglan", Toast.LENGTH_SHORT).show()
         }
-        // Klavyeyi acik tut: odagi geri al (butonlar focusable=false oldugu icin odak zaten kutuda)
+        // Klavyeyi acik tut: odagi geri al (butonlar focusable=false oldugu icin odak zaten kutuda).
+        // Tek sefer yetmezse diye iki kademeli dene.
         binding.inputText.requestFocus()
+        val imm = requireContext().getSystemService(InputMethodManager::class.java)
         binding.inputText.postDelayed({
-            val imm = requireContext().getSystemService(InputMethodManager::class.java)
+            if (b == null) return@postDelayed
+            binding.inputText.requestFocus()
             imm?.showSoftInput(binding.inputText, InputMethodManager.SHOW_IMPLICIT)
         }, 100)
+        binding.inputText.postDelayed({
+            if (b == null) return@postDelayed
+            if (!imm!!.isActive(binding.inputText)) {
+                binding.inputText.requestFocus()
+                imm.showSoftInput(binding.inputText, InputMethodManager.SHOW_IMPLICIT)
+            }
+        }, 400)
     }
 
     fun appendText(t: String) {
