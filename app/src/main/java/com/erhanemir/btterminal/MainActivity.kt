@@ -20,6 +20,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var b: ActivityMainBinding
     private var adapter: BluetoothAdapter? = null
     val logBuffer = StringBuilder()
+    private val rxPending = StringBuilder()
 
     private val permLauncher =
         registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { }
@@ -48,6 +49,15 @@ class MainActivity : AppCompatActivity() {
         BtManager.onData = { text ->
             logBuffer.append(text)
             if (logBuffer.length > 30000) logBuffer.delete(0, logBuffer.length - 30000)
+            // Tamamlanan satirlari mini ekranlar icin ayikla
+            rxPending.append(text)
+            var idx = rxPending.indexOf("\n")
+            while (idx >= 0) {
+                val line = rxPending.substring(0, idx).trim()
+                rxPending.delete(0, idx + 1)
+                if (line.isNotEmpty()) CmdHistory.pushRx(line)
+                idx = rxPending.indexOf("\n")
+            }
             (supportFragmentManager.findFragmentById(R.id.fragmentHost) as? TerminalFragment)
                 ?.appendText(text)
         }

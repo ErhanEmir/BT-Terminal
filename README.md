@@ -14,6 +14,7 @@ HC-05 / HC-06 Bluetooth modulleri icin Android kontrol uygulamasi.
   indirip kurar. Ust bardaki `⟳` ile elle de denetlenebilir.
 - **Terminal araclari:** gonderince klavye acik kalir, klavyedeki enter da gonderir,
   `HEX` ile gelen baytlarin ham karsiligi gorulur, `⧉` ile log kopyalanir.
+- **Keypad mini ekranlari:** tus takiminin ustunde son 2 gelen ve son 2 gonderilen komut.
 
 ## Kullanim (HC-05 / HC-06)
 

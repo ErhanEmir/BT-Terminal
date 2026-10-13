@@ -57,6 +57,7 @@ class TerminalFragment : Fragment() {
         val ok = BtManager.send(Prefs.withNewline(requireContext(), msg))
         if (ok) {
             binding.inputText.text.clear()
+            CmdHistory.pushTx(msg)
             appendText(">> $msg\n")
         } else {
             Toast.makeText(requireContext(), "Once baglan", Toast.LENGTH_SHORT).show()

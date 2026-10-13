@@ -47,7 +47,15 @@ class KeypadFragment : Fragment() {
             }
         }
         showGrid(labels44, 4)
+        CmdHistory.onChange = { refreshMini() }
+        refreshMini()
         return binding.root
+    }
+
+    private fun refreshMini() {
+        val binding = b ?: return
+        binding.rxMini.text = CmdHistory.rx.joinToString("\n").ifEmpty { "—" }
+        binding.txMini.text = CmdHistory.tx.joinToString("\n").ifEmpty { "—" }
     }
 
     private fun showGrid(labels: Array<String>, cols: Int) {
@@ -98,6 +106,7 @@ class KeypadFragment : Fragment() {
     private fun sendValue(value: String) {
         val ok = BtManager.send(Prefs.withNewline(requireContext(), value))
         if (!ok) Toast.makeText(requireContext(), "Once baglan", Toast.LENGTH_SHORT).show()
+        else CmdHistory.pushTx(value)
     }
 
     private fun persist() = Prefs.saveCustom(requireContext(), customItems)
@@ -146,6 +155,7 @@ class KeypadFragment : Fragment() {
     }
 
     override fun onDestroyView() {
+        if (CmdHistory.onChange != null) CmdHistory.onChange = null
         b = null
         super.onDestroyView()
     }
