@@ -41,7 +41,10 @@ class MainActivity : AppCompatActivity() {
             b.connectBtn.isEnabled = false
         }
 
-        BtManager.onState = { _, info -> b.statusText.text = info }
+        BtManager.onState = { connected, info ->
+            b.statusText.text = info
+            b.statusDot.setBackgroundResource(if (connected) R.drawable.dot_on else R.drawable.dot_off)
+        }
         BtManager.onData = { text ->
             logBuffer.append(text)
             if (logBuffer.length > 30000) logBuffer.delete(0, logBuffer.length - 30000)
@@ -54,15 +57,7 @@ class MainActivity : AppCompatActivity() {
 
         b.bottomNav.setOnItemSelectedListener { item ->
             val f: Fragment = when (item.itemId) {
-                R.id.nav_4x4 -> KeypadFragment.newInstance(
-                    arrayOf("1", "2", "3", "A", "4", "5", "6", "B", "7", "8", "9", "C", "*", "0", "#", "D"),
-                    4
-                )
-                R.id.nav_3x3 -> KeypadFragment.newInstance(
-                    arrayOf("1", "2", "3", "4", "5", "6", "7", "8", "9"),
-                    3
-                )
-                R.id.nav_custom -> CustomFragment()
+                R.id.nav_keypad -> KeypadFragment()
                 else -> TerminalFragment()
             }
             supportFragmentManager.beginTransaction().replace(R.id.fragmentHost, f).commit()

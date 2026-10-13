@@ -1,6 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Button xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.button.MaterialButton xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/itemBtn"
+    style="@style/Widget.Material3.Button.OutlinedButton"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:minHeight="72dp" />
+    android:ellipsize="end"
+    android:maxLines="1"
+    android:minHeight="72dp"
+    android:singleLine="true"
+    app:cornerRadius="16dp"
+    app:strokeColor="@color/neon" />

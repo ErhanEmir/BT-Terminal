@@ -1,4 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="ic_launcher_background">#039BE5</color>
+    <color name="abyss">#05070F</color>
+    <color name="deep">#0B1026</color>
+    <color name="surface">#141B2E</color>
+    <color name="neon">#00E5FF</color>
+    <color name="mint">#00FF9D</color>
+    <color name="text_main">#E8F4FF</color>
+    <color name="text_dim">#8FA3C7</color>
 </resources>

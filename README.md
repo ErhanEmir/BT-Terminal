@@ -5,9 +5,8 @@ HC-05 / HC-06 Bluetooth modulleri icin Android kontrol uygulamasi.
 ## Ozellikler
 
 - **Terminal:** cift yonlu seri monitor. Yazi yaz, gonder, gelen veriyi anlik izle. Satir sonu (`\n`) secenegi.
-- **4x4 Keypad:** `1-9`, `*`, `0`, `#`, `A`, `B`, `C`, `D`. Basilan tusun uzerindeki karakter Bluetooth uzerinden gonderilir.
-- **3x3 Keypad:** `1-9` hizli tus takimi.
-- **Ozel Butonlar:** kendi butonlarini ekle (ad + gonderilecek deger), uzun basarak gonder/sil.
+- **Keypad (tek ekran, secmeli):** `4x4` (`1-9`, `*`, `0`, `#`, `A-D`), `3x3` (`1-9`) veya `Ozel` modu. Basilan tusun uzerindeki karakter Bluetooth uzerinden gonderilir, basimda tik animasyonu.
+- **Ozel Butonlar:** keypad ekraninin `Ozel` modunda kendi butonlarini ekle (ad + gonderilecek deger), uzun basarak gonder/sil.
 - **Baglanti:** eslesmis cihaz listesinden sec, baglan, tek tusla baglantiyi kes.
 
 ## Kullanim (HC-05 / HC-06)
