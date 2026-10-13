@@ -8,6 +8,8 @@ HC-05 / HC-06 Bluetooth modulleri icin Android kontrol uygulamasi.
 - **Keypad (tek ekran, secmeli):** `4x4` (`1-9`, `*`, `0`, `#`, `A-D`), `3x3` (`1-9`) veya `Ozel` modu. Basilan tusun uzerindeki karakter Bluetooth uzerinden gonderilir, basimda tik animasyonu.
 - **Ozel Butonlar:** keypad ekraninin `Ozel` modunda kendi butonlarini ekle (ad + gonderilecek deger), uzun basarak gonder/sil.
 - **Baglanti:** eslesmis cihaz listesinden sec, baglan, tek tusla baglantiyi kes.
+  Baglanirken sirayla 3 yontem dener (guvenli SPP, guvensiz SPP, kanal-1);
+  HC-05/HC-06 ile uyumsuzluk cikarsa otomatik digerine gecer.
 
 ## Kullanim (HC-05 / HC-06)
 

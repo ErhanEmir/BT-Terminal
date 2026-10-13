@@ -44,27 +44,56 @@ object BtManager {
         }
         ui.post { onState?.invoke(false, "Baglaniyor: $deviceName...") }
         worker = Thread {
+            @Suppress("DEPRECATION")
+            val adapter = BluetoothAdapter.getDefaultAdapter()
             try {
-                val adapter = BluetoothAdapter.getDefaultAdapter()
-                try {
-                    adapter?.cancelDiscovery()
-                } catch (_: SecurityException) {
-                }
-                val s = device.createRfcommSocketToServiceRecord(SPP)
-                socket = s
-                s.connect()
-                connected = true
-                ui.post { onState?.invoke(true, "Bagli: $deviceName") }
-                readLoop(s)
-            } catch (e: IOException) {
-                closeQuietly()
-                connected = false
-                ui.post { onState?.invoke(false, "Baglanti hatasi: ${e.message}") }
-            } catch (e: SecurityException) {
-                connected = false
-                ui.post { onState?.invoke(false, "Izin hatasi: ${e.message}") }
+                adapter?.cancelDiscovery()
+            } catch (_: SecurityException) {
             }
+            val errors = mutableListOf<String>()
+            // 1) Standart guvenli SPP soketi
+            var s = tryConnect(errors) { device.createRfcommSocketToServiceRecord(SPP) }
+            // 2) Guvensiz SPP (HC-05/HC-06 cogu telefonda bunu ister)
+            if (s == null) {
+                s = tryConnect(errors) { device.createInsecureRfcommSocketToServiceRecord(SPP) }
+            }
+            // 3) Kanal-1 yansima yontemi (klasik HC-05 "read failed" cozumu)
+            if (s == null) {
+                s = tryConnect(errors) {
+                    @Suppress("UNCHECKED_CAST")
+                    val m = device.javaClass.getMethod(
+                        "createRfcommSocket",
+                        Int::class.javaPrimitiveType
+                    )
+                    m.invoke(device, 1) as BluetoothSocket
+                }
+            }
+            if (s == null) {
+                connected = false
+                ui.post { onState?.invoke(false, "Baglanamadi: ${errors.lastOrNull() ?: "bilinmiyor"}") }
+                return@Thread
+            }
+            socket = s
+            connected = true
+            ui.post { onState?.invoke(true, "Bagli: $deviceName") }
+            readLoop(s)
         }.also { it.start() }
+    }
+
+    private fun tryConnect(errors: MutableList<String>, open: () -> BluetoothSocket): BluetoothSocket? {
+        var s: BluetoothSocket? = null
+        return try {
+            s = open()
+            s!!.connect()
+            s
+        } catch (e: Exception) {
+            errors.add(e.message ?: e.javaClass.simpleName)
+            try {
+                s?.close()
+            } catch (_: IOException) {
+            }
+            null
+        }
     }
 
     private fun readLoop(s: BluetoothSocket) {
@@ -74,7 +103,10 @@ object BtManager {
             while (connected) {
                 val n = inp.read(buf)
                 if (n <= 0) break
+                // Arduino/HC tarafi "\r\n" gonderir; ekranda garip gorunmemesi icin normalize et
                 val text = String(buf, 0, n, Charsets.UTF_8)
+                    .replace("\r\n", "\n")
+                    .replace("\r", "\n")
                 ui.post { onData?.invoke(text) }
             }
         } catch (_: IOException) {
