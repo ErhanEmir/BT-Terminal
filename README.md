@@ -12,6 +12,8 @@ HC-05 / HC-06 Bluetooth modulleri icin Android kontrol uygulamasi.
   HC-05/HC-06 ile uyumsuzluk cikarsa otomatik digerine gecer.
 - **Otomatik guncelleme:** acilista sessizce yeni surumu denetler, varsa tek dokunusla
   indirip kurar. Ust bardaki `⟳` ile elle de denetlenebilir.
+- **Terminal araclari:** gonderince klavye acik kalir, klavyedeki enter da gonderir,
+  `HEX` ile gelen baytlarin ham karsiligi gorulur, `⧉` ile log kopyalanir.
 
 ## Kullanim (HC-05 / HC-06)
 

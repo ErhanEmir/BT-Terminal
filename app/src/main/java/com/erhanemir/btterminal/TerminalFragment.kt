@@ -1,9 +1,14 @@
 package com.erhanemir.btterminal
 
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
 import android.widget.ScrollView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
@@ -12,6 +17,7 @@ import com.erhanemir.btterminal.databinding.FragmentTerminalBinding
 class TerminalFragment : Fragment() {
 
     private var b: FragmentTerminalBinding? = null
+    private var hexMode = false
 
     override fun onCreateView(inf: LayoutInflater, c: ViewGroup?, s: Bundle?): View {
         val binding = FragmentTerminalBinding.inflate(inf, c, false)
@@ -22,28 +28,51 @@ class TerminalFragment : Fragment() {
         binding.newlineCb.setOnCheckedChangeListener { _, v ->
             Prefs.setNewlineEnabled(requireContext(), v)
         }
-        binding.sendBtn.setOnClickListener {
-            val msg = binding.inputText.text.toString()
-            if (msg.isEmpty()) return@setOnClickListener
-            val ok = BtManager.send(Prefs.withNewline(requireContext(), msg))
-            if (ok) {
-                binding.inputText.text.clear()
-                appendText(">> $msg\n")
-            } else {
-                Toast.makeText(requireContext(), "Once baglan", Toast.LENGTH_SHORT).show()
-            }
+        binding.hexCb.setOnCheckedChangeListener { _, v -> hexMode = v }
+        binding.sendBtn.setOnClickListener { doSend() }
+        // Klavyedeki "gonder" (enter) tusu da gondersin, klavye kapanmasin
+        binding.inputText.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_SEND) {
+                doSend()
+                true
+            } else false
         }
         binding.clearBtn.setOnClickListener {
             act?.logBuffer?.clear()
             binding.logText.text = ""
         }
+        binding.copyBtn.setOnClickListener {
+            val cm = requireContext().getSystemService(ClipboardManager::class.java)
+            cm?.setPrimaryClip(ClipData.newPlainText("bt-log", binding.logText.text))
+            Toast.makeText(requireContext(), "Log kopyalandi", Toast.LENGTH_SHORT).show()
+        }
         binding.logText.post { scrollDown() }
         return binding.root
     }
 
+    private fun doSend() {
+        val binding = b ?: return
+        val msg = binding.inputText.text.toString()
+        if (msg.isEmpty()) return
+        val ok = BtManager.send(Prefs.withNewline(requireContext(), msg))
+        if (ok) {
+            binding.inputText.text.clear()
+            appendText(">> $msg\n")
+        } else {
+            Toast.makeText(requireContext(), "Once baglan", Toast.LENGTH_SHORT).show()
+        }
+        // Klavyeyi acik tut: odagi geri al
+        binding.inputText.requestFocus()
+        val imm = requireContext().getSystemService(InputMethodManager::class.java)
+        imm?.showSoftInput(binding.inputText, InputMethodManager.SHOW_IMPLICIT)
+    }
+
     fun appendText(t: String) {
         val binding = b ?: return
-        binding.logText.append(t)
+        val shown = if (hexMode) {
+            t.toByteArray(Charsets.UTF_8).joinToString(" ") { "%02X".format(it) } + "\n"
+        } else t
+        binding.logText.append(shown)
         if (binding.logText.length() > 30000) {
             binding.logText.text = binding.logText.text.substring(binding.logText.length() - 30000)
         }

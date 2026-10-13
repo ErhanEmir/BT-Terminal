@@ -6,13 +6,31 @@
     android:orientation="vertical"
     android:padding="10dp">
 
-    <CheckBox
-        android:id="@+id/newlineCb"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:checked="true"
-        android:text="Satir sonu (\n) ekle"
-        android:textColor="@color/text_dim" />
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <CheckBox
+            android:id="@+id/newlineCb"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:checked="true"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:singleLine="true"
+            android:text="Satir sonu (\n)"
+            android:textColor="@color/text_dim" />
+
+        <CheckBox
+            android:id="@+id/hexCb"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="HEX"
+            android:textColor="@color/text_dim" />
+    </LinearLayout>
 
     <ScrollView
         android:layout_width="match_parent"
@@ -46,6 +64,7 @@
             android:background="@drawable/input_bg"
             android:ellipsize="end"
             android:hint="Gonderilecek yazi"
+            android:imeOptions="actionSend"
             android:inputType="text"
             android:maxLines="1"
             android:padding="12dp"
@@ -68,6 +87,14 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="6dp"
             android:text="✕"
+            app:cornerRadius="14dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/copyBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="6dp"
+            android:text="⧉"
             app:cornerRadius="14dp" />
     </LinearLayout>
 
