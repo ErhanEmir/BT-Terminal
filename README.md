@@ -10,6 +10,8 @@ HC-05 / HC-06 Bluetooth modulleri icin Android kontrol uygulamasi.
 - **Baglanti:** eslesmis cihaz listesinden sec, baglan, tek tusla baglantiyi kes.
   Baglanirken sirayla 3 yontem dener (guvenli SPP, guvensiz SPP, kanal-1);
   HC-05/HC-06 ile uyumsuzluk cikarsa otomatik digerine gecer.
+- **Otomatik guncelleme:** acilista sessizce yeni surumu denetler, varsa tek dokunusla
+  indirip kurar. Ust bardaki `⟳` ile elle de denetlenebilir.
 
 ## Kullanim (HC-05 / HC-06)
 

@@ -54,6 +54,18 @@ class MainActivity : AppCompatActivity() {
 
         b.connectBtn.setOnClickListener { ensurePermsThen { ensureBtOnThen { showDeviceDialog() } } }
         b.disconnectBtn.setOnClickListener { BtManager.disconnect() }
+        b.updateBtn.setOnClickListener {
+            Toast.makeText(this, "Guncelleme denetleniyor...", Toast.LENGTH_SHORT).show()
+            UpdateManager.check(this, silent = false) { upd, err ->
+                if (upd != null) askUpdate(upd)
+                else if (err != null) Toast.makeText(this, "Kontrol edilemedi: $err", Toast.LENGTH_LONG).show()
+                else Toast.makeText(this, "Zaten guncelsin (${UpdateManager.currentVersion(this)})", Toast.LENGTH_SHORT).show()
+            }
+        }
+        // Acilista sessiz kontrol
+        UpdateManager.check(this, silent = true) { upd, _ ->
+            if (upd != null) askUpdate(upd)
+        }
 
         b.bottomNav.setOnItemSelectedListener { item ->
             val f: Fragment = when (item.itemId) {
@@ -89,8 +101,16 @@ class MainActivity : AppCompatActivity() {
         else enableBtLauncher.launch(Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE))
     }
 
-    private fun showDeviceDialog() {
-        val ad = adapter ?: return
+    private fun askUpdate(upd: UpdateManager.Update) {
+        AlertDialog.Builder(this)
+            .setTitle("Yeni surum: ${upd.tag}")
+            .setMessage("Indirilip kurulsun mu?")
+            .setPositiveButton("Guncelle") { _, _ -> UpdateManager.download(this, upd.url) }
+            .setNegativeButton("Sonra", null)
+            .show()
+    }
+
+    private fun showDeviceDialog() {        val ad = adapter ?: return
         val devices = BtManager.paired(ad)
         if (devices.isEmpty()) {
             Toast.makeText(
